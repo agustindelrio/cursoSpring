@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ternium.springboo.backend.apirest.models.dao.IClienteDao;
 import com.ternium.springboo.backend.apirest.models.dao.IVehicleDao;
 import com.ternium.springboo.backend.apirest.models.entity.Cliente;
 import com.ternium.springboo.backend.apirest.models.entity.Vehicle;
@@ -48,4 +49,11 @@ public class VehicleServicesImp implements IVehicleServices {
 	public Vehicle findByBrand(String brand) {
 		return vehicleDao.findByBrand(brand);
 	}
+
+	@Override
+	public List<Vehicle> findByLicencePlateAndZeroKm(String licencePlate, Boolean zeroKm) {
+		return vehicleDao.findByLicencePlateAndZeroKm(licencePlate, zeroKm);
+	}
+	
+	
 }

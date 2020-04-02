@@ -14,4 +14,5 @@ public interface IVehicleServices {
 	public Vehicle save(Vehicle vehicle);
 	public void delete(Long id);
 	public Vehicle findByBrand(String brand);
+	public List<Vehicle> findByLicencePlateAndZeroKm(String licencePlate, Boolean zeroKm);
 }

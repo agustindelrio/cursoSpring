@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +43,21 @@ public class VehicleRestController {
 	@GetMapping("/vehicles/{brand}")
 	public ResponseEntity<?> findVehicleByBrand(@PathVariable String brand) {
 		return new ResponseEntity<Vehicle>(vehicleService.findByBrand(brand), HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/vehicles/buscar")
+	public ResponseEntity<?> findByNameAndSurname (@RequestParam(value="licencePlate",required=false) String licencePlate, @RequestParam(value="zeroKm", required=false) Boolean zeroKm) {
+		List<Vehicle> vehicle = null;
+		Map<String, Object> response = new HashMap<>(); 
+
+		try {
+			vehicle = vehicleService.findByLicencePlateAndZeroKm(licencePlate, zeroKm);
+		} catch (final Exception ex) {
+			response.put("mensaje","El vehiculo patente : ".concat(licencePlate).concat(" no existe en la base de datos"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<List<Vehicle>>(vehicle, HttpStatus.OK);
 	}
 	
 	
