@@ -1,6 +1,7 @@
 package com.ternium.springboo.backend.apirest.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,6 +46,7 @@ public class ClienteRestController {
 	public List<Cliente> clienteList(){
 		return clienteService.findAll();
 	}
+
 	
 	@GetMapping("/clientes/{id}")
 	//@ResponseStatus(HttpStatus.OK) // por defecto
@@ -62,11 +66,28 @@ public class ClienteRestController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
-
 	}
+	
+	@GetMapping("/clientes/buscar")
+	public ResponseEntity<?> findByNameAndSurname (@RequestParam(value="nombre",required=true) String nombre, @RequestParam(value="apellido",required=true) String apellido) {
+		Cliente cliente = null;
+		Map<String, Object> response = new HashMap<>(); 
+
+		try {
+			HashMap<String, Object> params = new HashMap<>();
+			params.put("nombre", nombre);
+			params.put("apellido", apellido);
+			cliente = clienteService.findByNameAndSurname(params);
+		} catch (final Exception ex) {
+			response.put("mensaje","El cliente : ".concat(nombre).concat(" no existe en la base de datos"));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+	}
+	
 	@PostMapping("/clientes")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> create(@Valid @RequestBody Cliente body, BindingResult result){
+	public ResponseEntity<?> create(@Valid @RequestBody Cliente body, BindingResult result) {
 		Cliente cliente = null;
 		Map<String, Object> response = new HashMap<>(); 
 
@@ -91,7 +112,6 @@ public class ClienteRestController {
 		response.put("cliente", cliente);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
-
 	}
 	
 	@GetMapping("/clientes/cambiarEmail")

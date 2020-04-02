@@ -43,4 +43,9 @@ public class VehicleServicesImp implements IVehicleServices {
 	public void delete(Long id) {
 		vehicleDao.deleteById(id);
 	}
+
+	@Override
+	public Vehicle findByBrand(String brand) {
+		return vehicleDao.findByBrand(brand);
+	}
 }

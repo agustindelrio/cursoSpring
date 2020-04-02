@@ -13,4 +13,5 @@ public interface IVehicleServices {
 	public Vehicle findByLicenceId(String id);
 	public Vehicle save(Vehicle vehicle);
 	public void delete(Long id);
+	public Vehicle findByBrand(String brand);
 }
