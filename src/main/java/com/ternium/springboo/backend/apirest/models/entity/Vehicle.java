@@ -2,6 +2,7 @@ package com.ternium.springboo.backend.apirest.models.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,8 @@ public class Vehicle  implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="cliente_id",nullable = true)
+	@OneToOne(cascade = {CascadeType.ALL})
+	//@Column(name="cliente_id",nullable = true)
 	private Cliente cliente;
 	
 	@Column(nullable = false)

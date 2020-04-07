@@ -35,6 +35,9 @@ public class VehicleRestController {
 	@Autowired
 	private IVehicleServices vehicleService;
 	
+	@Autowired
+	private IClienteServices clienteService;
+	
 	@GetMapping("/vehicles")
 	public List<Vehicle> clienteList(){
 		return vehicleService.findAll();
@@ -74,6 +77,8 @@ public class VehicleRestController {
 		}
 		
 		try {
+			Cliente cliente = clienteService.findById(body.getCliente().getId());
+			body.setCliente(cliente);
 			vehicle = vehicleService.save(body);
 
 		} catch(final DataAccessException ex) {
