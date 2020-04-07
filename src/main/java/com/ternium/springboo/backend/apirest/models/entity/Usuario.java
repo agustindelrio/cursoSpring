@@ -1,7 +1,10 @@
 package com.ternium.springboo.backend.apirest.models.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Usuario {
@@ -9,7 +12,6 @@ public class Usuario {
 	private Long id;
 	private String username;
 	private String password;
-	
 	
 	public Long getId() {
 		return id;

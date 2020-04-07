@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ternium.springboo.backend.apirest.models.dao.IClienteDao;
 import com.ternium.springboo.backend.apirest.models.dao.IVehicleDao;
 import com.ternium.springboo.backend.apirest.models.entity.Cliente;
+import com.ternium.springboo.backend.apirest.models.entity.Direccion;
 import com.ternium.springboo.backend.apirest.models.entity.Vehicle;
 
 @Service

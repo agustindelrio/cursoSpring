@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ternium.springboo.backend.apirest.models.entity.Cliente;
+import com.ternium.springboo.backend.apirest.models.entity.Direccion;
 import com.ternium.springboo.backend.apirest.models.services.IClienteServices;
+import com.ternium.springboo.backend.apirest.models.services.IDireccionServices;
 import com.ternium.springboo.backend.apirest.models.services.IVehicleServices;
 
 @CrossOrigin(origins= {"http://localhost:4200"})
@@ -41,6 +43,9 @@ public class ClienteRestController {
 	
 	@Autowired
 	private IClienteServices clienteService;
+	
+	@Autowired
+	private IDireccionServices direccionServices;
 	
 	@GetMapping("/clientes")
 	public List<Cliente> clienteList(){
@@ -80,6 +85,7 @@ public class ClienteRestController {
 			cliente = clienteService.findByNameAndSurname(params);
 		} catch (final Exception ex) {
 			response.put("mensaje","El cliente : ".concat(nombre).concat(" no existe en la base de datos"));
+			response.put("error",ex.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
@@ -110,6 +116,41 @@ public class ClienteRestController {
 		
 		response.put("mensaje", "Se dio de alta el cliente");
 		response.put("cliente", cliente);
+
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/clientes/{id}/agregarDireccion")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ResponseEntity<?> addDireccion(@PathVariable Long id, @Valid @RequestBody Direccion body, BindingResult result) {
+		Cliente cliente = null;
+		Cliente clienteNew = null;
+
+		Map<String, Object> response = new HashMap<>(); 
+
+		if (result.hasErrors()) {			
+			List<String> errors = result.getFieldErrors().stream().map(error -> error.getField().concat(" ").concat(error.getDefaultMessage())).collect(Collectors.toList());
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			cliente = clienteService.findById(id);
+			
+			if (cliente != null) {
+				Direccion newDireccion = direccionServices.save(body);
+				cliente.setDireccion(newDireccion);
+				clienteNew = clienteService.save(cliente);
+			}
+
+		} catch(final DataAccessException ex) {
+			response.put("mensaje", "error al dar de alta el cliente");
+			response.put("error", ex.getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "Se dio de alta el cliente");
+		response.put("cliente", clienteNew);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
